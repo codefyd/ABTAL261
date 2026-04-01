@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - إدارة البطولة</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loadingSpinner" class="spinner-overlay">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">جاري التحميل...</span>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-futbol"></i>
+                لوحة تحكم البطولة
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard">
+                            <i class="fas fa-chart-line"></i> لوحة التحكم
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#teams">
+                            <i class="fas fa-users"></i> الفرق
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#players">
+                            <i class="fas fa-user-friends"></i> اللاعبون
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#matches">
+                            <i class="fas fa-calendar-alt"></i> المباريات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-eye"></i> عرض البطولة
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid admin-container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="admin-section active">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="section-title">لوحة التحكم</h2>
+                </div>
+            </div>
+            <div class="row" id="dashboardStats"></div>
+            
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>آخر المباريات</h5>
+                        </div>
+                        <div class="card-body" id="recentMatches"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>ترتيب الهدافين</h5>
+                        </div>
+                        <div class="card-body" id="topScorersPreview"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teams Management Section -->
+        <section id="teams" class="admin-section">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <button class="btn btn-primary" onclick="showAddTeamModal()">
+                        <i class="fas fa-plus"></i> إضافة فريق جديد
+                    </button>
+                </div>
+            </div>
+            <div class="row" id="teamsContainer"></div>
+        </section>
+
+        <!-- Players Management Section -->
+        <section id="players" class="admin-section">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <select id="teamFilter" class="form-select" onchange="loadPlayers()">
+                        <option value="all">جميع الفرق</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-primary" onclick="showAddPlayerModal()">
+                        <i class="fas fa-plus"></i> إضافة لاعب
+                    </button>
+                </div>
+            </div>
+            <div class="row" id="playersContainer"></div>
+        </section>
+
+        <!-- Matches Management Section -->
+        <section id="matches" class="admin-section">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <button class="btn btn-primary" onclick="generateGroupMatches()">
+                        <i class="fas fa-random"></i> توليد مباريات المجموعات
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <button class="btn btn-success" onclick="generateKnockoutMatches()">
+                        <i class="fas fa-chart-line"></i> توليد مباريات خروج المغلوب
+                    </button>
+                </div>
+            </div>
+            <div id="matchesAdminContainer"></div>
+        </section>
+    </div>
+
+    <!-- Team Modal -->
+    <div class="modal fade" id="teamModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="teamModalTitle">إضافة فريق</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="teamForm">
+                        <input type="hidden" id="teamId">
+                        <div class="mb-3">
+                            <label class="form-label">اسم الفريق</label>
+                            <input type="text" class="form-control" id="teamName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">المجموعة</label>
+                            <select class="form-select" id="teamGroup" required>
+                                <option value="A">المجموعة A</option>
+                                <option value="B">المجموعة B</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">شعار الفريق (URL)</label>
+                            <input type="text" class="form-control" id="teamLogo" placeholder="https://example.com/logo.png">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">اللون الرئيسي</label>
+                            <input type="color" class="form-control" id="teamColor" value="#007bff">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="saveTeam()">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Modal -->
+    <div class="modal fade" id="playerModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="playerModalTitle">إضافة لاعب</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="playerForm">
+                        <input type="hidden" id="playerId">
+                        <div class="mb-3">
+                            <label class="form-label">اسم اللاعب</label>
+                            <input type="text" class="form-control" id="playerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">الفريق</label>
+                            <select class="form-select" id="playerTeam" required></select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">المركز</label>
+                            <select class="form-select" id="playerPosition">
+                                <option value="حارس مرمى">حارس مرمى</option>
+                                <option value="مدافع">مدافع</option>
+                                <option value="وسط">وسط</option>
+                                <option value="مهاجم">مهاجم</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">رقم القميص</label>
+                            <input type="number" class="form-control" id="playerNumber">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="savePlayer()">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Match Result Modal -->
+    <div class="modal fade" id="matchResultModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تسجيل نتيجة المباراة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="matchResultBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="saveMatchResult()">حفظ النتيجة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
