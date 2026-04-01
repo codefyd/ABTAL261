@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطولة النخبة - الصفحة الرئيسية</title>
+    
+    <!-- Bootstrap 5 RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="spinner-overlay">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">جاري التحميل...</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-futbol"></i>
+                بطولة النخبة
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">
+                            <i class="fas fa-home"></i> الرئيسية
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#groups">
+                            <i class="fas fa-table"></i> المجموعات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#matches">
+                            <i class="fas fa-calendar-alt"></i> المباريات
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#topScorers">
+                            <i class="fas fa-trophy"></i> الهدافون
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#bestPlayers">
+                            <i class="fas fa-star"></i> أفضل اللاعبين
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin.html">
+                            <i class="fas fa-user-shield"></i> الإدارة
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="hero-title animate__animated">
+                        <i class="fas fa-trophy"></i>
+                        بطولة النخبة
+                    </h1>
+                    <p class="hero-subtitle">أكبر بطولة كروية في المنطقة</p>
+                    <div class="hero-stats mt-4">
+                        <div class="row justify-content-center">
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="hero-stat-card">
+                                    <i class="fas fa-users"></i>
+                                    <span id="totalTeams">0</span>
+                                    <small>فريق</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="hero-stat-card">
+                                    <i class="fas fa-futbol"></i>
+                                    <span id="totalGoals">0</span>
+                                    <small>هدف</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="hero-stat-card">
+                                    <i class="fas fa-calendar-check"></i>
+                                    <span id="totalMatches">0</span>
+                                    <small>مباراة</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6 mb-3">
+                                <div class="hero-stat-card">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span id="finishedMatches">0</span>
+                                    <small>مباراة منتهية</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Groups Section -->
+        <section id="groups" class="section-groups">
+            <div class="container">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-table"></i>
+                        ترتيب المجموعات
+                    </h2>
+                    <div class="header-line"></div>
+                </div>
+                <div class="row" id="groupsContainer"></div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="section-stats">
+            <div class="container">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-chart-bar"></i>
+                        إحصائيات البطولة
+                    </h2>
+                    <div class="header-line"></div>
+                </div>
+                <div class="row" id="generalStats"></div>
+            </div>
+        </section>
+
+        <!-- Matches Section -->
+        <section id="matches" class="section-matches">
+            <div class="container">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-calendar-alt"></i>
+                        جدول المباريات
+                    </h2>
+                    <div class="header-line"></div>
+                </div>
+                
+                <!-- Match Filters -->
+                <div class="filters-bar mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <select id="stageFilter" class="form-select">
+                                <option value="all">جميع المراحل</option>
+                                <option value="groups">دور المجموعات</option>
+                                <option value="semi">نصف النهائي</option>
+                                <option value="final">النهائي</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select id="statusFilter" class="form-select">
+                                <option value="all">جميع المباريات</option>
+                                <option value="upcoming">قادمة</option>
+                                <option value="finished">منتهية</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="teamSearch" class="form-control" placeholder="بحث عن فريق...">
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="matchesContainer"></div>
+            </div>
+        </section>
+
+        <!-- Top Scorers Section -->
+        <section id="topScorers" class="section-top-scorers">
+            <div class="container">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-trophy"></i>
+                        قائمة الهدافين
+                    </h2>
+                    <div class="header-line"></div>
+                </div>
+                <div class="row" id="topScorersContainer"></div>
+            </div>
+        </section>
+
+        <!-- Best Players Section -->
+        <section id="bestPlayers" class="section-best-players">
+            <div class="container">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-star"></i>
+                        أفضل اللاعبين
+                    </h2>
+                    <div class="header-line"></div>
+                </div>
+                <div class="row" id="bestPlayersContainer"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Match Details Modal -->
+    <div class="modal fade" id="matchModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تفاصيل المباراة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="matchModalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary" id="printMatchCardBtn">
+                        <i class="fas fa-print"></i> طباعة بطاقة المباراة
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Champion Modal -->
+    <div class="modal fade" id="championModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content champion-modal">
+                <div class="modal-body text-center">
+                    <i class="fas fa-trophy champion-trophy"></i>
+                    <h2 id="championName"></h2>
+                    <p>بطل بطولة النخبة</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
